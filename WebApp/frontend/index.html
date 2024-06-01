@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <title>Sample Frontend</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
-<body>
-    <h1>Data from Flask Backend</h1>
+<body onload="initMap()">
+    <!-- Your HTML content goes here -->
+    <div id="map" style="width: 100%; height: 400px;"></div>
+    <!-- Include script.js -->
+    <script src="/home/cs179g/repo/WebApp/frontend/static/script.js"></script>
 </body>
 </html>
+
