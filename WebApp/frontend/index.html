@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sample Frontend</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha384-xodZBntMqp6ldXIDiUQOeBe29+1U9vN4u1AN7oG7hZsz3WY2UisI5x4MFPsu/F3Z" crossorigin=""/>
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha384-vcfKc+z37Xb6ttE3lDsdmvqt/E59V4Dkdfh4e7UbJ2Ur2czl0j0z7+W0j00+8nq3" crossorigin=""></script>
 </head>
 <body>
     <h1>Data from Flask Backend</h1>
-    <div id="data-container"></div>
-    <!-- Map container -->
-    <div id="map" style="height: 500px;"></div>
-
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

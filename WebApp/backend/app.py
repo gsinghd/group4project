@@ -12,24 +12,15 @@ db_config = {
 }
 
 # Route for fetching data from SQL database
-@app.route('/')
-def fetch_data():
+@app.route('/data')
+def check_mysql_connection():
     try:
         # Connect to MySQL database
         conn = mysql.connector.connect(**db_config)
-        cursor = conn.cursor(dictionary=True)
-
-        # Execute SQL query
-        cursor.execute('SELECT * FROM average_sale_price_by_state')
-        data = cursor.fetchall()
-
-        # Close database connection
-        cursor.close()
         conn.close()
-
-        return jsonify(data)
+        return jsonify({'status': 'MySQL connection successful'})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Failed to connect to MySQL', 'details': str(e)}), 500
 
 @app.route('/')
 def index():
