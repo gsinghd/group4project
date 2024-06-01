@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template
 import mysql.connector
 
-app = Flask(__name__, template_folder='/home/cs179g/WebApp/frontend', static_folder='/home/cs179g/WebApp/frontend/static')
+app = Flask(__name__, template_folder='/home/cs179g/repo/WebApp/frontend', static_folder='/home/cs179g/repo/WebApp/frontend/static')
 
 # MySQL Configuration
 db_config = {
