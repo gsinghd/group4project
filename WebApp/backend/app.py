@@ -141,6 +141,42 @@ def get_datasets():
 def index():
     return render_template('index.html')
 
+@app.route('/states/<dataset>')
+def get_states(dataset):
+    try:
+        # Connect to MySQL database
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
 
+        # Fetch the distinct states from the selected dataset
+        cursor.execute(f"SELECT DISTINCT state FROM {dataset}")
+        states = [row[0] for row in cursor.fetchall()]
+
+        # Close the connection
+        cursor.close()
+        conn.close()
+
+        return jsonify(states)
+    except Exception as e:
+        return jsonify({'error': 'Failed to fetch states', 'details': str(e)}), 500
+
+@app.route('/regions/<dataset>')
+def get_regions(dataset):
+    try:
+        # Connect to MySQL database
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+
+        # Fetch the distinct regions from the selected dataset
+        cursor.execute(f"SELECT DISTINCT region FROM {dataset}")
+        regions = [row[0] for row in cursor.fetchall()]
+
+        # Close the connection
+        cursor.close()
+        conn.close()
+
+        return jsonify(regions)
+    except Exception as e:
+        return jsonify({'error': 'Failed to fetch regions', 'details': str(e)}), 500
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
