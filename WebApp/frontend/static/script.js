@@ -8,3 +8,24 @@ function initMap() {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 }
+
+function populateDatasetSelect() {
+    const datasetSelect = document.getElementById('datasetSelect');
+
+    fetch('/datasets')
+        .then(response => response.json())
+        .then(datasets => {
+            datasets.forEach(dataset => {
+                const option = document.createElement('option');
+                option.value = dataset;
+                option.text = dataset;
+                datasetSelect.add(option);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Call the function to populate the dataset select on page load
+populateDatasetSelect();
+
+

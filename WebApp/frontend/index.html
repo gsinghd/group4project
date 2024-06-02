@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Sample Frontend</title>
+    <title>Housing Market Analysis</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
@@ -9,6 +9,16 @@
     <!-- Your HTML content goes here -->
     <div id="map" style="width: 100%; height: 400px;"></div>
     <!-- Include script.js -->
+    <script src="/static/script.js"></script>
+<body>
+    <div id="map"></div>
+
+    <select id="datasetSelect">
+        <option value="" disabled selected>Select a dataset</option>
+    </select>
+    <div id="datasetContainer"></div>
+
+    <!-- Add your JavaScript file -->
     <script src="/static/script.js"></script>
 </body>
 </html>
