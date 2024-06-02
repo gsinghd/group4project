@@ -70,7 +70,8 @@ function populateData() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            dataContainer.textContent = selectedDataset + ": " + data;
+            var datasetLabel = getDatasetLabel(selectedDataset);
+            dataContainer.innerHTML = "<h3>" + datasetLabel + "</h3>" + JSON.stringify(data);
         })
         .catch(error => console.error('Error:', error));
 }
@@ -151,6 +152,25 @@ function populateStateRegionSelect() {
     //     });
     // })
     // .catch(error => console.error('Error:', error));
+}
+
+function getDatasetLabel(dataset) {
+    // Customize the label based on the dataset type or any other criteria
+    if (dataset.includes('average_sale_price_by_region')) {
+        return "Average Sale Price by Region: ";
+    } else if (dataset.includes('average_sale_price_by_state')) {
+        return "Average Sale Price by State: ";
+    } else if (dataset.includes('average_list_price_by_region')) {
+        return "Average List Price By Region: ";
+    } else if(dataset.includes('average_list_price_by_state')){
+        return "Average List Price By State: ";
+    } else if(dataset.includes('avg_price_change')){
+        return "Average Price Change By State: "
+    } else if(dataset.includes('avg_price_change_region')){
+        return "Average Price Change By Region: "
+    } else {
+        return "Data for " + dataset;
+    }
 }
 populateStateRegionSelect();
 
