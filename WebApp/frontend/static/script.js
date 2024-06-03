@@ -11,6 +11,17 @@ function initMap() {
     }).addTo(map);
 }
 
+const tableDisplayNames = {
+    "average_list_price_by_region": "Average List Price by Region",
+    "average_list_price_by_state": "Average List Price by State",
+    "average_sale_price_by_region": "Average Sale Price by Region",
+    "average_sale_price_by_state": "Average Sale Price by State",
+    "avg_price_change_by_state": "Average Price Change by State",
+    "avg_price_change_region": "Average Price Change by Region",
+    "median_dom_state_by_type": "Median Days on Market by State and Property Type",
+    "median_prices_state_prop_type": "Median Prices by State and Property Type"
+};
+
 function populateDatasetSelect() {
     const datasetSelect = document.getElementById('datasetSelect');
 
@@ -18,6 +29,7 @@ function populateDatasetSelect() {
         .then(response => response.json())
         .then(datasets => {
             datasets.forEach(dataset => {
+                const displayName = tableDisplayNames[dataset] || dataset;
                 const option = document.createElement('option');
                 option.value = dataset;
                 option.text = dataset;
@@ -41,6 +53,25 @@ function setStateLocation(){
             var marker = L.marker([data.latitude, data.longitude]).addTo(map);
             marker.bindPopup("<b>" + selectedState + "</b><br>Latitude: " + data.latitude + "<br>Longitude: " + data.longitude).openPopup();
             map.setView([ data.latitude, data.longitude], 6);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function setRegionLocation(){
+    var selectElement = document.getElementById('regionSelect');
+    var selectedRegion = selectElement.value.slice(-5);
+    fetch("/region_location/" + selectedRegion)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.lat)
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            var marker = L.marker([data.lat, data.lng]).addTo(map);
+            marker.bindPopup("<b>" + selectedRegion + "</b><br>Latitude: " + data.lat + "<br>Longitude: " + data.lng).openPopup();
+            map.setView([ data.lat, data.lng], 6);
         })
         .catch(error => console.error('Error:', error));
 }
@@ -71,7 +102,8 @@ function populateData() {
         .then(response => response.json())
         .then(data => {
             var datasetLabel = getDatasetLabel(selectedDataset);
-            dataContainer.innerHTML = "<h3>" + datasetLabel + "</h3>" + JSON.stringify(data);
+            var price = data[0];
+            dataContainer.innerHTML = "<h3>" + datasetLabel + "</h3>" + price;
         })
         .catch(error => console.error('Error:', error));
 }
@@ -87,6 +119,7 @@ function populateStateRegionSelect() {
     // Clear previous options
     stateSelect.innerHTML = '<option value="" disabled selected>Select a state</option>';
     regionSelect.innerHTML = '<option value="" disabled selected>Select a region</option>';
+    typeSelect.innerHTML = '<option value="" disabled selected>Select a property type</option>';
 
     const selectedDataset = datasetSelect.value;
 
@@ -95,6 +128,7 @@ function populateStateRegionSelect() {
             .then(response => response.json())
             .then((types) => {
                 types.forEach(type => {
+                    console.log("Fetched types:", types);
                     const option = document.createElement('option');
                     option.value = type;
                     option.text = type;
@@ -102,7 +136,7 @@ function populateStateRegionSelect() {
                 });
             })
             .catch(error => console.error('Error:', error));
-    }
+    } 
 
     if (selectedDataset.includes('state')) {
         fetch(`/states/${selectedDataset}`)
@@ -130,28 +164,6 @@ function populateStateRegionSelect() {
             .catch(error => console.error('Error:', error));
 
     }
-    // Fetch states and regions for the selected dataset
-    // Promise.all([
-    //     fetch(`/states/${selectedDataset}`),
-    //     fetch(`/regions/${selectedDataset}`)
-    // ])
-    // .then(responses => Promise.all(responses.map(response => response.json())))
-    // .then(([states, regions]) => {
-    //     states.forEach(state => {
-    //         const option = document.createElement('option');
-    //         option.value = state;
-    //         option.text = state;
-    //         stateSelect.add(option);
-    //     });
-
-    //     regions.forEach(region => {
-    //         const option = document.createElement('option');
-    //         option.value = region;
-    //         option.text = region;
-    //         regionSelect.add(option);
-    //     });
-    // })
-    // .catch(error => console.error('Error:', error));
 }
 
 function getDatasetLabel(dataset) {
@@ -164,15 +176,26 @@ function getDatasetLabel(dataset) {
         return "Average List Price By Region: ";
     } else if(dataset.includes('average_list_price_by_state')){
         return "Average List Price By State: ";
-    } else if(dataset.includes('avg_price_change')){
-        return "Average Price Change By State: "
+    } else if(dataset.includes('avg_price_change_by_state')){
+        return "Average Price Change By State: ";
     } else if(dataset.includes('avg_price_change_region')){
-        return "Average Price Change By Region: "
-    } else {
+        return "Average Price Change By Region: ";
+    } else if(dataset.includes('property_stats')){
+        return "Property Statistics: ";
+    } else if (dataset.includes('median_dom_state_by_type')){
+        return "Median Days on Market By State and Property Type";
+    } else if(dataset.includes('median_prices_state_prop')){
+        return "Median Prices By State and Property Type";
+    }else {
         return "Data for " + dataset;
     }
 }
 populateStateRegionSelect();
+
+const datasetSelect = document.getElementById('datasetSelect');
+const stateSelect = document.getElementById('stateSelect');
+const regionSelect = document.getElementById('regionSelect');
+const navigateButton = document.getElementById('navigateButton');
 
 // Event listener for dataset selection
 datasetSelect.addEventListener('change', () => {
@@ -180,10 +203,19 @@ datasetSelect.addEventListener('change', () => {
     fetchData();
 });
 
+// Event listener for region selection
+regionSelect.addEventListener('change', () => {
+    setRegionLocation();
+});
+
 // Event listener for state selection
 stateSelect.addEventListener('change', () => {
     fetchData();
     setStateLocation();
+});
+
+navigateButton.addEventListener('click', () => {
+    window.location.href = 'http://127.0.0.1:5000/us-map';
 });
 
 function fetchData() {
