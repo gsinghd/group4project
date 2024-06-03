@@ -255,7 +255,67 @@ def growth_data():
 }
     return jsonify(growth_by_state)
 
+@app.route('/industry-growth-data')
+def industry_growth_data():
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        query = "SELECT region, predicted_industry_potential FROM industry_potential"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        # Transform data into a dictionary keyed by region
+        growth_data = {row['region']: row['predicted_industry_potential'] for row in rows}
+        return jsonify(growth_data)
+    except Exception as e:
+        return jsonify({'error': 'Database query failed', 'details': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/state-industry-growth-data')
+def state_industry_growth_data():
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT SUBSTRING_INDEX(region, ',', -1) AS state, AVG(predicted_industry_potential) AS avg_growth
+            FROM industry_potential
+            GROUP BY SUBSTRING_INDEX(region, ',', -1)
+        """)
+        rows = cursor.fetchall()
+        # Normalize state names if necessary, and round averages for simplicity
+        growth_data = {row['state'].strip(): round(row['avg_growth'], 2) for row in rows}
+        return jsonify(growth_data)  # Ensure the variable name matches what's being returned
+    except Exception as e:
+        # Ensure the error message is helpful and the variable names are correct
+        return jsonify({'error': 'Database query failed', 'details': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/state-regional-growth-data')
+def state_regional_growth_data():
+    conn = mysql.connector.connect(**db_config)
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT SUBSTRING_INDEX(region, ',', -1) AS state, AVG(predicted_regional_growth) AS avg_growth
+            FROM regional_growth
+            GROUP BY SUBSTRING_INDEX(region, ',', -1)
+        """)
+        rows = cursor.fetchall()
+        growth_data = {row['state'].strip(): round(row['avg_growth'], 4) for row in rows}
+        return jsonify(growth_data)
+    except Exception as e:
+        return jsonify({'error': 'Database query failed', 'details': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5004)
+    app.run(debug=True, host='0.0.0.0', port=5002)

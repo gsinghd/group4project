@@ -22,6 +22,10 @@ const tableDisplayNames = {
     "median_prices_state_prop_type": "Median Prices by State and Property Type"
 };
 
+function openMapPage() {
+    window.open('/us-map', '_blank');
+}
+
 function populateDatasetSelect() {
     const datasetSelect = document.getElementById('datasetSelect');
 
