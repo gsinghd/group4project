@@ -22,6 +22,12 @@ const tableDisplayNames = {
     "median_prices_state_prop_type": "Median Prices by State and Property Type"
 };
 
+const excludedDatasets = [
+    "industry_potential_by_region",
+    "regional_growth_by_region",
+    "temp_table"
+];
+
 function openMapPage() {
     window.open('/us-map', '_blank');
 }
@@ -33,11 +39,13 @@ function populateDatasetSelect() {
         .then(response => response.json())
         .then(datasets => {
             datasets.forEach(dataset => {
-                const displayName = tableDisplayNames[dataset] || dataset;
-                const option = document.createElement('option');
-                option.value = dataset;
-                option.text = dataset;
-                datasetSelect.add(option);
+                if (!excludedDatasets.includes(dataset)) {
+                    const displayName = tableDisplayNames[dataset] || dataset;
+                    const option = document.createElement('option');
+                    option.value = dataset;
+                    option.text = displayName;
+                    datasetSelect.add(option);
+                }
             });
         })
         .catch(error => console.error('Error:', error));

@@ -261,7 +261,7 @@ def industry_growth_data():
     cursor = conn.cursor(dictionary=True)
 
     try:
-        query = "SELECT region, predicted_industry_potential FROM industry_potential"
+        query = "SELECT region, predicted_industry_potential FROM industry_potential_by_region"
         cursor.execute(query)
         rows = cursor.fetchall()
         # Transform data into a dictionary keyed by region
@@ -281,7 +281,7 @@ def state_industry_growth_data():
     try:
         cursor.execute("""
             SELECT SUBSTRING_INDEX(region, ',', -1) AS state, AVG(predicted_industry_potential) AS avg_growth
-            FROM industry_potential
+            FROM industry_potential_by_region
             GROUP BY SUBSTRING_INDEX(region, ',', -1)
         """)
         rows = cursor.fetchall()
@@ -303,7 +303,7 @@ def state_regional_growth_data():
     try:
         cursor.execute("""
             SELECT SUBSTRING_INDEX(region, ',', -1) AS state, AVG(predicted_regional_growth) AS avg_growth
-            FROM regional_growth
+            FROM regional_growth_by_region
             GROUP BY SUBSTRING_INDEX(region, ',', -1)
         """)
         rows = cursor.fetchall()
@@ -318,4 +318,4 @@ def state_regional_growth_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5002)
+    app.run(debug=True, host='0.0.0.0', port=5001)
