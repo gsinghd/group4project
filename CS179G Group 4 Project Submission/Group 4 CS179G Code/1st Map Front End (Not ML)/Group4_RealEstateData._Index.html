@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Market Analysis</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body onload="initMap()">
+    <div class="sidebar">
+        <h2>Select Data</h2>
+        <select id="datasetSelect">
+            <option value="" disabled selected>Select a dataset</option>
+        </select>
+        <select id="stateSelect">
+            <option value="" disabled selected>Select a state</option>
+        </select>
+        <select id="regionSelect">
+            <option value="" disabled selected>Select a region</option>
+        </select>
+        <select id="typeSelect">
+            <option value="" disabled selected>Select a property type</option>
+        </select>
+        <button onclick="populateData()">Get Data</button>
+        <div>
+            <h2>Information</h2>
+            <div id="dataResponse"></div>
+        </div>
+    </div>
+    <div class="main-content">
+        <div id="map"></div>
+        <div id="data-container"></div>
+    </div>
+    <button onclick="openMapPage()" style="position: fixed; left: 10px; bottom: 10px;">Go to Map Page</button>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
+
+
+
+
